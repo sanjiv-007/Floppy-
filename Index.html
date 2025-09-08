@@ -3,22 +3,41 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Custom Flappy Bird</title>
-    <style>
-        canvas {
-            border: 1px solid black;
-            display: block;
-            margin: auto;
-            background-color: #70c5ce;
-        }
-    </style>
+    <title>Customize Your Flappy Bird</title>
 </head>
 
 <body>
-    <input type="file" id="characterUpload" accept="image/*">
-    <canvas id="gameCanvas" width="400" height="600"></canvas>
+    <h2>Upload Your Bird Image</h2>
+    <input type="file" id="uploadInput" accept="image/*">
+    <br><br>
+    <button onclick="generateLink()">Get Shareable Link</button>
 
-    <script src="game.js"></script>
+    <p id="shareLink"></p>
+
+    <script>
+        let uploadedImageBase64 = '';
+
+        document.getElementById('uploadInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                uploadedImageBase64 = event.target.result.split(',')[1];  // Only the base64 part
+                alert('Image uploaded! Now click "Get Shareable Link".');
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function generateLink() {
+            if (!uploadedImageBase64) {
+                alert('Please upload an image first.');
+                return;
+            }
+
+            const gameUrl = `${window.location.origin}/game.html?character=${uploadedImageBase64}`;
+            document.getElementById('shareLink').innerHTML = `<a href="${gameUrl}" target="_blank">${gameUrl}</a>`;
+        }
+    </script>
 </body>
 
 </html>
+
