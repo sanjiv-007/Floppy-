@@ -22,15 +22,6 @@
         const ctx = canvas.getContext('2d');
 
         let playerImg = new Image();
-        const params = new URLSearchParams(window.location.search);
-        const characterBase64 = params.get('character');
-
-        if (characterBase64) {
-            playerImg.src = `data:image/png;base64,${characterBase64}`;
-        } else {
-            playerImg.src = 'default-bird.png';
-        }
-
         let player = {
             x: 50,
             y: 150,
@@ -45,6 +36,17 @@
         let frame = 0;
         let score = 0;
         let gameOver = false;
+
+        // Step 1: Load config.json to get bird image filename
+        async function loadConfigAndStartGame() {
+            const res = await fetch('config.json');
+            const config = await res.json();
+            const birdImage = config.birdImage || 'default-bird.png';
+
+            playerImg.src = birdImage;
+
+            playerImg.onload = () => loop();
+        }
 
         function createPipe() {
             const gap = 120;
@@ -116,8 +118,5 @@
             }
         }
 
-        playerImg.onload = () => loop();
-    </script>
-</body>
+        // Start the game by loading conf
 
-</html>
